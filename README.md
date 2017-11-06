@@ -2,6 +2,9 @@
 
 ## For Docker Hub automated build. Base on Offical Jenkins Image,include dotnet sdk,nuget,python3,g++,make.
 
+Jenkins:
+- Version:  ` 2.73.2` **LTS**
+
 Dotnet SDK :
 
 - Version: `2.0.2`
@@ -22,5 +25,5 @@ make:
 
 - Version: `4.1`
 
-**Usage:** See Jenkins Offical [Guide](https://github.com/jenkinsci/docker) or Jenkins Offical [Image](https://hub.docker.com/_/jenkins/).
+**Usage:** See Jenkins Offical [Guide](https://github.com/jenkinsci/docker) or Jenkins Offical [Image](https://hub.docker.com/r/jenkins/jenkins/).
 

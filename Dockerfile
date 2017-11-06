@@ -1,4 +1,4 @@
-FROM jenkins:2.60.3
+FROM jenkins/jenkins:2.73.2
 MAINTAINER Swire <idoop@msn.cn>
 
 #----Install .Net Core SDK & Nuget & Python3----#
@@ -25,7 +25,20 @@ RUN apt-get update \
         libtool \
         libssl-dev \
         zlib1g-dev \
+        python3-dev \
     && rm -rf /var/lib/apt/lists/*
+    
+# install Python3 setuptools
+ENV PY_SETUPTOOLS_VERSION 36.6.0
+ENV PY_SETUPTOOLS_URL https://github.com/pypa/setuptools/archive/v${PY_SETUPTOOLS_VERSION}.tar.gz
+
+RUN curl -SL ${PY_SETUPTOOLS_URL} --output v${PY_SETUPTOOLS_VERSION}.tar.gz \
+    && tar -zxf v${PY_SETUPTOOLS_VERSION}.tar.gz \
+    && cd setuptools-${PY_SETUPTOOLS_VERSION} \
+    && python3 bootstrap.py \
+    && python3 setup.py install \
+    && cd ../ && rm -rf setuptools-${PY_SETUPTOOLS_VERSION} v${PY_SETUPTOOLS_VERSION}.tar.gz
+
 # Install .NET Core SDK
 ENV DOTNET_SDK_VERSION 2.0.2
 ENV DOTNET_SDK_DOWNLOAD_URL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz
