@@ -20,27 +20,39 @@ RUN apt-get update \
         zlib1g \
         nuget \
         g++ \
+        m4 \
         make \
         cmake \
+        automake \
         libtool \
-        libssl-dev \
         zlib1g-dev \
+        libssl-dev \
+        libapr1-dev \
+        libboost-system-dev \
         python3-dev \
         python3-pip \
         build-essential \
     && rm -rf /var/lib/apt/lists/*
     
-# install Python3 setuptools
-ENV PY_SETUPTOOLS_VERSION 36.6.0
-ENV PY_SETUPTOOLS_URL https://github.com/pypa/setuptools/archive/v${PY_SETUPTOOLS_VERSION}.tar.gz
+# Set Default symbolic python ==> python3,pip ==> pip3,and some modules
+RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
+    && ln -s /usr/bin/pip3 /usr/bin/pip \
+    && pip install setuptools \
+    && pip install six asn1crypto bcrypt chardet nose mock pbr pyasn1 requests \
+    && pip install cffi multi_key_dict cryptography idna paramiko pyapi-gitlab \
+    && pip install pyasn1 pycparser PyNaCl python-jenkins selenium
 
-#RUN curl -SL ${PY_SETUPTOOLS_URL} --output v${PY_SETUPTOOLS_VERSION}.tar.gz \
-#    && tar -zxf v${PY_SETUPTOOLS_VERSION}.tar.gz \
-#    && cd setuptools-${PY_SETUPTOOLS_VERSION} \
-#    && python3 bootstrap.py \
-#    && python3 setup.py install \
-#    && cd ../ && rm -rf setuptools-${PY_SETUPTOOLS_VERSION} v${PY_SETUPTOOLS_VERSION}.tar.gz
-
+# Install libuv
+ENV LIBUV_VERSION 1.16.0
+RUN curl -SL https://github.com/libuv/libuv/archive/v${LIBUV_VERSION}.tar.gz --output v${LIBUV_VERSION}.tar.gz \
+    && tar -zxf v${LIBUV_VERSION}.tar.gz \
+    && cd libuv-${LIBUV_VERSION} \
+    && sh autogen.sh \
+    && ./configure \
+    && make \
+    && make check \
+    && make install
+    
 # Install .NET Core SDK
 ENV DOTNET_SDK_VERSION 2.0.2
 ENV DOTNET_SDK_DOWNLOAD_URL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz
