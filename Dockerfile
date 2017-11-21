@@ -32,7 +32,8 @@ RUN apt-get update \
         python3-dev \
         python3-pip \
         build-essential \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && git config --global credential.helper store
     
 # Set Default symbolic python ==> python3,pip ==> pip3,and some modules
 RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
@@ -46,12 +47,15 @@ RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
 ENV LIBUV_VERSION 1.16.0
 RUN curl -SL https://github.com/libuv/libuv/archive/v${LIBUV_VERSION}.tar.gz --output v${LIBUV_VERSION}.tar.gz \
     && tar -zxf v${LIBUV_VERSION}.tar.gz \
+    && rm -rf v${LIBUV_VERSION}.tar.gz \
     && cd libuv-${LIBUV_VERSION} \
     && sh autogen.sh \
     && ./configure \
     && make \
     && make check \
-    && make install
+    && make install \
+    && cd ../ \
+    && rm -rf libuv-${LIBUV_VERSION}
     
 # Install .NET Core SDK
 ENV DOTNET_SDK_VERSION 2.0.2
