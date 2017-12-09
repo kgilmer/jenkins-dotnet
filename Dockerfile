@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.73.3
+FROM jenkins/jenkins:2.89.1
 MAINTAINER Swire Chen<idoop@msn.cn>
 
 #----Install .Net Core SDK & Nuget & Python3----#
