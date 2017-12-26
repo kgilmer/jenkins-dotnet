@@ -3,11 +3,11 @@
 **For Docker Hub automated build. Base on Offical Jenkins Image,include dotnet sdk,nuget,python3,g++,make,etc...**
 
 Jenkins:
-- Version:  ` 2.89.1` **Not LTS**
+- Version:  ` 2.98` **Not LTS**
 
 Dotnet SDK :
 
-- Version: `2.0.3`
+- Version: `2.1.3`
 
 Python:
 
