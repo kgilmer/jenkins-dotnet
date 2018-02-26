@@ -47,20 +47,6 @@ RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
     && pip install six asn1crypto bcrypt chardet nose mock pbr pyasn1 requests \
     && pip install cffi multi_key_dict cryptography idna paramiko pyapi-gitlab \
     && pip install pyasn1 pycparser PyNaCl python-jenkins selenium
-
-# Install libuv
-ENV LIBUV_VERSION 1.16.0
-RUN curl -SL https://github.com/libuv/libuv/archive/v${LIBUV_VERSION}.tar.gz --output v${LIBUV_VERSION}.tar.gz \
-    && tar -zxf v${LIBUV_VERSION}.tar.gz \
-    && rm -rf v${LIBUV_VERSION}.tar.gz \
-    && cd libuv-${LIBUV_VERSION} \
-    && sh autogen.sh \
-    && ./configure \
-    && make \
-    && make check \
-    && make install \
-    && cd ../ \
-    && rm -rf libuv-${LIBUV_VERSION}
     
 # Install .NET Core SDK
 ENV DOTNET_SDK_VERSION 2.1.4
