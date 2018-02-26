@@ -43,7 +43,7 @@ RUN apt-get update \
 # Set Default symbolic python ==> python3,pip ==> pip3,and some modules
 RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
     && ln -s /usr/bin/pip3 /usr/bin/pip \
-    && pip install setuptools \
+    && pip install setuptools wheel\
     && pip install six asn1crypto bcrypt chardet nose mock pbr pyasn1 requests \
     && pip install cffi multi_key_dict cryptography idna paramiko pyapi-gitlab \
     && pip install pyasn1 pycparser PyNaCl python-jenkins selenium
