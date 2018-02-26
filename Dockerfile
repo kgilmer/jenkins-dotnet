@@ -1,9 +1,8 @@
-FROM jenkins/jenkins:2.98
+FROM jenkins/jenkins:2.89.4
 MAINTAINER Swire Chen<idoop@msn.cn>
 
 #----Install .Net Core SDK & Nuget & Python3----#
 USER root
-
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         libc6 \
@@ -18,6 +17,7 @@ RUN apt-get update \
         libuuid1 \
         python3 \
         zlib1g \
+        gnupg \
         nuget \
         g++ \
         m4 \
@@ -32,6 +32,11 @@ RUN apt-get update \
         python3-dev \
         python3-pip \
         build-essential \
+        apt-transport-https \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends powershell \
     && rm -rf /var/lib/apt/lists/* \
     && git config --global credential.helper store
     
@@ -58,9 +63,9 @@ RUN curl -SL https://github.com/libuv/libuv/archive/v${LIBUV_VERSION}.tar.gz --o
     && rm -rf libuv-${LIBUV_VERSION}
     
 # Install .NET Core SDK
-ENV DOTNET_SDK_VERSION 2.1.3
+ENV DOTNET_SDK_VERSION 2.1.4
 ENV DOTNET_SDK_DOWNLOAD_URL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz
-ENV DOTNET_SDK_DOWNLOAD_SHA 509b88895fd5a6a90e245141eb52f188aa9ee7d20188c213892483c142900d6975013aef9ca6d8da986cc5617a2c3571e22318297c51578b871c047602757600
+ENV DOTNET_SDK_DOWNLOAD_SHA 05FE90457A8B77AD5A5EB2F22348F53E962012A55077AC4AD144B279F6CAD69740E57F165820BFD6104E88B30E93684BDE3E858F781541D4F110F28CD52CE2B7
 
 RUN curl -SL $DOTNET_SDK_DOWNLOAD_URL --output dotnet.tar.gz \
     && echo "$DOTNET_SDK_DOWNLOAD_SHA dotnet.tar.gz" | sha512sum -c - \
@@ -77,4 +82,9 @@ RUN mkdir warmup \
     && cd .. \
     && rm -rf warmup \
     && rm -rf /tmp/NuGetScratch
+
+# Set Timezone with CST
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+  && echo 'Asia/Shanghai' >/etc/timezone
+  
 USER jenkins
