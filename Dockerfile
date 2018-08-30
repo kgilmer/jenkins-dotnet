@@ -27,19 +27,24 @@ RUN apt-get update \
                 urllib3==1.22 \
                 requests==2.18.4 \
                 kubernetes==6.0.0 \
+                pytz==2018.4 \
+                PyYAML==3.12 \
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends powershell \
     && rm -rf /var/lib/apt/lists/* \
-    && git config --global credential.helper store
-    
+    && git config --global credential.helper store \
+    # Set Timezone with CST
+    && /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo 'Asia/Shanghai' >/etc/timezone
  
 # Install .NET Core SDK
-ENV DOTNET_SDK_VERSION 2.1.301
+ENV DOTNET_SDK_VERSION 2.1.401
 
 RUN curl -SL --output dotnet.tar.gz https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz \
-    && dotnet_sha512='2101df5b1ca8a4a67f239c65080112a69fb2b48c1a121f293bfb18be9928f7cfbf2d38ed720cbf39c9c04734f505c360bb2835fa5f6200e4d763bd77b47027da' \
+    && dotnet_sha512='639f9f68f225246d9cce798d72d011f65c7eda0d775914d1394df050bddf93e2886555f5eed85a75d6c72e9063a54d8aa053c64c326c683b94e9e0a0570e5654' \
+    && sha512sum dotnet.tar.gz \
     && echo "$dotnet_sha512 dotnet.tar.gz" | sha512sum -c - \
     && mkdir -p /usr/share/dotnet \
     && tar -zxf dotnet.tar.gz -C /usr/share/dotnet \
@@ -50,10 +55,9 @@ RUN curl -SL --output dotnet.tar.gz https://dotnetcli.blob.core.windows.net/dotn
 ENV DOTNET_RUNNING_IN_CONTAINER=true \
     DOTNET_USE_POLLING_FILE_WATCHER=true
 #    NUGET_XMLDOC_MODE=skip
-# ASPNETCORE_URLS=http://+:80 
+# 	 ASPNETCORE_URLS=http://+:80 
 
-# Set Timezone with CST
-RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-  && echo 'Asia/Shanghai' >/etc/timezone
+
+
   
 USER jenkins
