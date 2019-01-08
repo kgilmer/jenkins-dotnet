@@ -1,21 +1,14 @@
 FROM jenkins/jenkins:latest
-MAINTAINER Swire Chen<idoop@msn.cn>
 
 #----Install .Net Core SDK & Nuget & Python3----#
 USER root
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    python3-dev \
-    python3-pip \
-	    libc6 \
-        libgcc1 \
-        libgssapi-krb5-2 \
-        libicu57 \
-        liblttng-ust0 \
-        libssl1.0.2 \
-        libstdc++6 \
-        zlib1g \
     apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg2 \
+    software-properties-common
     && rm -rf /var/lib/apt/lists/* \
     && git config --global credential.helper store \
     && rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
@@ -38,10 +31,18 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends powershell \
     && rm -rf /var/lib/apt/lists/* \
     && git config --global credential.helper store \
-    # Set Timezone with CST
-    && /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && echo 'Asia/Shanghai' >/etc/timezone
+    curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey && \
+    add-apt-repository \
+    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+    $(lsb_release -cs) \
+    stable" && \
+    apt-get update && \
+    apt-get -y install docker-ce
  
+RUN apt-get install -y docker-ce
+
+RUN usermod -a -G docker jenkins
+
 # Install .NET Core SDK
 ENV DOTNET_SDK_VERSION 2.2.100
 
