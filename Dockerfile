@@ -11,33 +11,18 @@ RUN apt-get update \
     software-properties-common \
     && rm -rf /var/lib/apt/lists/* \
     && git config --global credential.helper store \
-    && rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
-    && ln -s /usr/bin/pip3 /usr/bin/pip \
-    && pip install setuptools wheel \
-    && pip install paramiko==2.4.1 \
-                python-gitlab==1.7.0 \
-                python-jenkins==1.0.1 \
-                urllib3==1.22 \
-                requests==2.18.4 \
-                kubernetes==6.0.0 \
-                pytz==2018.4 \
-                PyYAML==3.12 \
-                msgpack==0.5.6 \
-                pytest==3.9.2 \
-                fabric==2.4.0 \
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends powershell \
     && rm -rf /var/lib/apt/lists/* \
-    && git config --global credential.helper store \
-    curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey && \
-    add-apt-repository \
+    && curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey \
+    && add-apt-repository \
     "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
     $(lsb_release -cs) \
-    stable" && \
-    apt-get update && \
-    apt-get -y install docker-ce
+    stable" \
+    && apt-get update \
+    && apt-get -y install docker-ce
  
 RUN apt-get install -y docker-ce
 
