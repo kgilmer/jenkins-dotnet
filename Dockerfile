@@ -8,7 +8,7 @@ RUN apt-get update \
     ca-certificates \
     curl \
     gnupg2 \
-    software-properties-common
+    software-properties-common \
     && rm -rf /var/lib/apt/lists/* \
     && git config --global credential.helper store \
     && rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
